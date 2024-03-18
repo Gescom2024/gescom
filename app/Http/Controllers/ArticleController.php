@@ -14,24 +14,24 @@ class ArticleController extends Controller
         // Validation des données
         $request->validate([
             'nom' => 'required|string',
-            'famille'=> 'required|string',
             'suivi_stock' => 'required|string',
             'prix_achat'=> 'required|numeric',
             'dernier_prix_achat'=> 'required|numeric',
             'famille_id'=> 'required|numeric',
             'depot_id'=> 'required|numeric',
+            'id_fournisseur'=> 'required|numeric',
         ]);
   // $article->created_at = $request->created_at;
         // $article->updated_at = $request->updated_at;
         // Création de la société
         $article = new Article;
         $article->nom = $request->nom;
-        $article->famille = $request->famille;
         $article->suivi_stock = $request->suivi_stock;
         $article->prix_achat = $request->prix_achat;
         $article->dernier_prix_achat = $request->dernier_prix_achat;
         $article->famille_id = $request->famille_id;
         $article->depot_id = $request->depot_id;
+        $article->id_fournisseur = $request->id_fournisseur;
 
 
         // Enregistrement dans la base de données
@@ -45,12 +45,37 @@ class ArticleController extends Controller
 
 
 
-    public function getarticle(){
-        $article = Article::all();
-        return response()->json($article, 200);
+    // public function getarticle(){
+    //     $article = Article::all();
+    //     return response()->json($article, 200);
 
 
-    }
+    // }
+
+
+public function getarticle()
+{
+    $articles = Article::with(['famille', 'depot', 'fournisseur'])->get();
+
+    // Transformez les IDs en noms dans chaque article
+    $articles = $articles->map(function ($article) {
+        return [
+            'id' => $article->id,
+            'nom' => $article->nom,
+            'suivi_stock' => $article->suivi_stock,
+            'prix_achat' => $article->prix_achat,
+            'dernier_prix_achat' => $article->dernier_prix_achat,
+            'famille' => $article->famille->suivi_stock,
+            'depot' => $article->depot->nom,
+            'fournisseur' => $article->fournisseur->nom,
+            'created_at' => $article->created_at,
+            'updated_at' => $article->updated_at,
+        ];
+    });
+
+    return response()->json($articles, 200);
+}
+
 
 
 
@@ -66,24 +91,26 @@ class ArticleController extends Controller
 
         $request->validate([
             'nom' => 'required|string',
-            'famille'=> 'required|string',
             'suivi_stock' => 'required|string',
             'prix_achat'=> 'required|numeric',
             'dernier_prix_achat'=> 'required|numeric',
             'famille_id'=> 'required|numeric',
             'depot_id'=> 'required|numeric',
+            'id_fournisseur'=> 'required|numeric',
+
         ]);
 
 
 
         // $article = new Article;
         $article->nom = $request->nom;
-        $article->famille = $request->famille;
         $article->suivi_stock = $request->suivi_stock;
         $article->prix_achat = $request->prix_achat;
         $article->dernier_prix_achat = $request->dernier_prix_achat;
         $article->famille_id = $request->famille_id;
         $article->depot_id = $request->depot_id;
+        $article->id_fournisseur = $request->id_fournisseur;
+
 
         $article->save();
 
