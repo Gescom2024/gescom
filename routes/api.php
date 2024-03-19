@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\FamilleController;
 use App\Http\Controllers\FournisseurController;
+use App\Http\Controllers\PivotFournisseurArticleController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\UniteAchatVenteController;
 
@@ -111,5 +112,16 @@ Route::prefix("collaborateurs")->group(function () {
         Route::get('read', [UniteAchatVenteController::class, 'getuniteAchatVente']);
         Route::put('update/{id}', [UniteAchatVenteController::class, 'updateuniteAchatVente']);
         Route::delete('delete/{id}', [UniteAchatVenteController::class, 'supprimer']);
+
+        });
+
+
+
+        //Route pour pivot_fournisseur_article
+    Route::prefix("pivot")->group(function(){
+        // Route::post('create', [UniteAchatVenteController::class, 'store']);
+        Route::get('read', [PivotFournisseurArticleController::class, 'index']);
+        // Route::put('update/{id}', [UniteAchatVenteController::class, 'updateuniteAchatVente']);
+        // Route::delete('delete/{id}', [UniteAchatVenteController::class, 'supprimer']);
 
         });
